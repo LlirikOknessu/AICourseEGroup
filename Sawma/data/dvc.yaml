@@ -15,6 +15,7 @@ stages:
       - data/prepared/y_val.csv
     params:
       - data_preparation
+
   linear_regression:
     cmd: python linear_regression.py
     deps:
@@ -25,6 +26,7 @@ stages:
       - data/models/linear_regression_model.joblib
     params:
       - linear_regression
+
   linear_regression_validation:
     cmd: python linear_regression_validation.py
     deps:
@@ -34,6 +36,7 @@ stages:
       - data/models/linear_regression_model.joblib
     params:
       - linear_regression
+
   linear_regression_prod_version:
     cmd: python linear_regression_full.py
     deps:
