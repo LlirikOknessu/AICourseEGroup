@@ -1,0 +1,7 @@
+data_preparation:
+  train_test_ratio: 0.8
+  train_val_ratio: 0.8
+  random_state: 1
+
+linear_regression:
+  model_name: 'linear_regression_model'
