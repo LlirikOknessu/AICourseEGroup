@@ -2,9 +2,9 @@ import pandas as pd
 import argparse
 from pathlib import Path
 import yaml
-import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+
 
 def parser_args_for_sac():
     parser = argparse.ArgumentParser(description='Paths parser')
@@ -16,17 +16,29 @@ def parser_args_for_sac():
                         help='file with dvc stage params')
     return parser.parse_args()
 
-def encode_labels(df: pd.DataFrame):
-    label_encoder = LabelEncoder()
-    df['Country_Label'] = label_encoder.fit_transform(df['Country'])
-    df['Status'] = label_encoder.fit_transform(df['Status'])
-    return df
 
-def fill_missing_values(df: pd.DataFrame):
-    numeric_columns = df.select_dtypes(include=['float64', 'int64']).columns
-    mean_values = df[numeric_columns].mean()
-    df[numeric_columns] = df[numeric_columns].fillna(mean_values)
-    return df
+def encode_country_label(data):
+    label_encoder = LabelEncoder()
+    data['Country_Label'] = label_encoder.fit_transform(data['Country'])
+    return data
+
+
+def encode_status_label(data):
+    label_encoder = LabelEncoder()
+    data['Status'] = label_encoder.fit_transform(data['Status'])
+    return data
+
+
+def clean_data(data):
+    # Drop columns with low correlation
+    data.drop(columns=['Year', 'Hepatitis B', 'Total expenditure', 'infant deaths', 'Measles '], inplace=True)
+
+    # Encode categorical variables
+    data = encode_country_label(data)
+    data = encode_status_label(data)
+
+    return data
+
 
 if __name__ == '__main__':
     args = parser_args_for_sac()
@@ -40,21 +52,18 @@ if __name__ == '__main__':
     output_dir.mkdir(exist_ok=True, parents=True)
 
     for data_file in input_dir.glob('*.csv'):
-        df = pd.read_csv(data_file)
-        df = fill_missing_values(df)
-        df = encode_labels(df)
-        df.drop(columns=['Country'], inplace=True)
+        df = pd.read_csv(data_file)  # Read the data into df
+        cleaned_data = clean_data(df)  # Pass df to clean_data function
 
-        y = df['Life expectancy ']
-        X = df.drop(columns=['Life expectancy '])
+        X, y = cleaned_data.drop("Life expectancy ", axis=1), cleaned_data['Life expectancy ']
 
         X_train, X_test, y_train, y_test = train_test_split(X, y,
-                                                            train_size=params.get('train_test_ratio', 0.8),
-                                                            random_state=params.get('random_state', 1))
+                                                            train_size=params.get('train_test_ratio'),
+                                                            random_state=params.get('random_state'))
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,
-                                                          train_size=params.get('train_val_ratio', 0.8),
-                                                          random_state=params.get('random_state', 1))
-
+                                                          train_size=params.get('train_val_ratio'),
+                                                          random_state=params.get('random_state'))
+        # Adjust file names accordingly
         X_full_name = output_dir / 'X_full.csv'
         y_full_name = output_dir / 'y_full.csv'
         X_train_name = output_dir / 'X_train.csv'
@@ -64,6 +73,7 @@ if __name__ == '__main__':
         X_val_name = output_dir / 'X_val.csv'
         y_val_name = output_dir / 'y_val.csv'
 
+        # Save datasets to CSV files
         X.to_csv(X_full_name, index=False)
         y.to_csv(y_full_name, index=False)
         X_train.to_csv(X_train_name, index=False)
