@@ -5,7 +5,6 @@ import yaml
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
-
 def parser_args_for_sac():
     parser = argparse.ArgumentParser(description='Paths parser')
     parser.add_argument('--input_dir', '-id', type=str, default='data/raw/',
@@ -16,29 +15,21 @@ def parser_args_for_sac():
                         help='file with dvc stage params')
     return parser.parse_args()
 
-
 def encode_country_label(data):
     label_encoder = LabelEncoder()
     data['Country_Label'] = label_encoder.fit_transform(data['Country'])
     return data
-
 
 def encode_status_label(data):
     label_encoder = LabelEncoder()
     data['Status'] = label_encoder.fit_transform(data['Status'])
     return data
 
-
 def clean_data(data):
-    # Drop columns with low correlation
     data.drop(columns=['Year', 'Hepatitis B', 'Total expenditure', 'infant deaths', 'Measles '], inplace=True)
-
-    # Encode categorical variables
     data = encode_country_label(data)
     data = encode_status_label(data)
-
     return data
-
 
 if __name__ == '__main__':
     args = parser_args_for_sac()
@@ -52,9 +43,8 @@ if __name__ == '__main__':
     output_dir.mkdir(exist_ok=True, parents=True)
 
     for data_file in input_dir.glob('*.csv'):
-        df = pd.read_csv(data_file)  # Read the data into df
-        cleaned_data = clean_data(df)  # Pass df to clean_data function
-
+        df = pd.read_csv(data_file)
+        cleaned_data = clean_data(df)
         X, y = cleaned_data.drop("Life expectancy ", axis=1), cleaned_data['Life expectancy ']
 
         X_train, X_test, y_train, y_test = train_test_split(X, y,
@@ -63,7 +53,7 @@ if __name__ == '__main__':
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train,
                                                           train_size=params.get('train_val_ratio'),
                                                           random_state=params.get('random_state'))
-        # Adjust file names accordingly
+
         X_full_name = output_dir / 'X_full.csv'
         y_full_name = output_dir / 'y_full.csv'
         X_train_name = output_dir / 'X_train.csv'
@@ -73,7 +63,6 @@ if __name__ == '__main__':
         X_val_name = output_dir / 'X_val.csv'
         y_val_name = output_dir / 'y_val.csv'
 
-        # Save datasets to CSV files
         X.to_csv(X_full_name, index=False)
         y.to_csv(y_full_name, index=False)
         X_train.to_csv(X_train_name, index=False)

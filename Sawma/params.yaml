@@ -4,5 +4,9 @@ data_preparation:
   random_state: 1
 
 linear_regression:
-  model_name: linear_regression_model
+  model_name: linear_model
 
+mlp:
+  model_name: mlp_model
+  epochs: 300
+  batch_size: 8
