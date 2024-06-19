@@ -1,0 +1,53 @@
+schema: '2.0'
+stages:
+  data_preparation:
+    cmd: python data_preparation.py -id data/raw -od data/prepared
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: c7657b499a8c6f8d51d32cc787416f38.dir
+      size: 339978
+      nfiles: 1
+    - path: data_preparation.py
+      hash: md5
+      md5: e35c240dce31572e3ad987fb94eb0b48
+      size: 3121
+    params:
+      params.yaml:
+        data_preparation:
+          train_test_ratio: 0.8
+          train_val_ratio: 0.8
+          random_state: 1
+    outs:
+    - path: data/prepared/X_full.csv
+      hash: md5
+      md5: bf6f0af29c3292dc562e27122834afc9
+      size: 258796
+    - path: data/prepared/X_test.csv
+      hash: md5
+      md5: b5d96209d1176d4fb81d0a7647953b08
+      size: 52118
+    - path: data/prepared/X_train.csv
+      hash: md5
+      md5: 477e0098fccc1de191e6c54e271d27c0
+      size: 165951
+    - path: data/prepared/X_val.csv
+      hash: md5
+      md5: 666e712660242c08e889b663292e35f2
+      size: 41185
+    - path: data/prepared/y_full.csv
+      hash: md5
+      md5: a1eea8f9639eb4f424e1ccdf5199a0de
+      size: 16394
+    - path: data/prepared/y_test.csv
+      hash: md5
+      md5: 8309f8a99567ba14852acc3bf28cb485
+      size: 3296
+    - path: data/prepared/y_train.csv
+      hash: md5
+      md5: 83284f555e401bf43fd92d08d5066d89
+      size: 10498
+    - path: data/prepared/y_val.csv
+      hash: md5
+      md5: 3d05855f2c8f61c6388dfe541012b9f2
+      size: 2636
