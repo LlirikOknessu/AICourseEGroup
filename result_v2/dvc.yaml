@@ -1,0 +1,66 @@
+stages:
+  data_preparation:
+    cmd: python data_preparation.py -id data/raw -od data/prepared -p params.yaml
+    deps:
+      - data_preparation.py
+      - data/raw/insurance.csv
+      - params.yaml
+    outs:
+      - data/prepared
+
+  linear_regression:
+    cmd: python linear_regression.py -id data/prepared -od data/models -mn ${linear_regression.model_name} -p params.yaml
+    deps:
+      - linear_regression.py
+      - data/prepared
+      - params.yaml
+    outs:
+      - data/models/${linear_regression.model_name}.csv
+      - data/models/${linear_regression.model_name}.joblib
+
+  linear_regression_validation:
+    cmd: python linear_regression_validation.py -id data/prepared -im data/models/${linear_regression.model_name}.joblib -p params.yaml
+    deps:
+      - linear_regression_validation.py
+      - data/prepared/
+      - data/models/${linear_regression.model_name}.joblib
+      - params.yaml
+
+  linear_regression_prod_version:
+    cmd: python linear_regression_full.py -id data/prepared -od data/models -mn ${linear_regression.model_name} -p params.yaml
+    deps:
+      - linear_regression_full.py
+      - data/prepared
+      - params.yaml
+    outs:
+      - data/models/${linear_regression.model_name}_prod_coefficients.csv
+      - data/models/${linear_regression.model_name}_prod.joblib
+
+  mlp_model_train:
+    cmd: python mlp_train.py -id data/prepared -od data/models -mn mlp_model -p params.yaml
+    deps:
+      - mlp_train.py
+      - data/prepared
+      - params.yaml
+    outs:
+      - data/models/mlp_model.h5
+      - data/models/mlp_model_scaler.pkl
+
+  mlp_model_validation:
+    cmd: python mlp_validation.py -id data/prepared -im data/models/mlp_model.h5 -p params.yaml
+    deps:
+      - mlp_validation.py
+      - data/prepared/
+      - data/models/mlp_model.h5
+      - data/models/mlp_model_scaler.pkl
+
+  mlp_prod_version:
+    cmd: python mlp_full.py -id data/prepared/ -od data/models -mn mlp_model -p params.yaml
+    deps:
+      - mlp_full.py
+      - data/prepared
+      - params.yaml
+    outs:
+      - data/models/mlp_model_prod_coefficients.csv
+      - data/models/mlp_model_prod.joblib
+

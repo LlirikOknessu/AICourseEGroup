@@ -1,0 +1,12 @@
+,Coefficient
+num__age,0.4842809876308947
+num__bmi,0.08432492546080404
+num__children,0.12109168811756416
+cat__sex_female,0.03095432354792764
+cat__sex_male,-0.03095432354792733
+cat__smoker_no,-0.7787884143674906
+cat__smoker_yes,0.7787884143674906
+cat__region_northeast,0.08225884894532694
+cat__region_northwest,0.02129437639539415
+cat__region_southeast,-0.06632802176594697
+cat__region_southwest,-0.03722520357477403

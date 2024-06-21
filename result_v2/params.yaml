@@ -1,0 +1,21 @@
+data_preparation:
+  train_test_ratio: 0.8
+  train_val_ratio: 0.75
+  random_state: 42
+
+linear_regression:
+  model_name: "linear_regression_model"
+
+mlp:
+  hidden_units: 512
+  hidden_units1: 512
+  hidden_units2: 256
+  hidden_units3: 128
+  activation: 'relu'
+  optimizer: 'adam'
+  loss: 'mean_squared_error'
+  epochs: 300
+  batch_size: 32
+  learning_rate: 0.001
+  dropout_rate: 0.2
+  l2_reg: 0.000000001  # L2正则化参数
