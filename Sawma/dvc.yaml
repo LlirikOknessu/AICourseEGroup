@@ -74,15 +74,15 @@ stages:
         - mlp
 
   mlp_prod_version:
-      cmd: python mlp_full.py -id data/prepared -od data/models -mn ${mlp.model_name}
-      deps:
-        - mlp_full.py
-        - data/prepared/X_test.csv
-        - data/prepared/y_test.csv
-        - data/models/${mlp.model_name}.h5
-      outs:
-        - data/models/${mlp.model_name}_prod.h5
-      params:
-        - mlp
+    cmd: python mlp_prod_version.py -id data/prepared/ -od data/models/ -mn ${mlp.model_name}
+    deps:
+      - mlp_prod_version.py
+      - data/prepared/X_full.csv
+      - data/prepared/y_full.csv
+    outs:
+      - data/models/${mlp.model_name}_prod.h5
+    params:
+      - mlp
+
 
 
